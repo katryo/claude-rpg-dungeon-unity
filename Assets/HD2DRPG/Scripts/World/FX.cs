@@ -100,7 +100,7 @@ namespace HD2DRPG
                                        float duration, float spin = 0f)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            Object.Destroy(go.GetComponent<Collider>());
+            Object.DestroyImmediate(go.GetComponent<Collider>());
             go.name = "FXDecal";
             go.transform.SetParent(Root, false);
             go.transform.position = pos;
@@ -172,54 +172,4 @@ namespace HD2DRPG
         }
     }
 
-    public class FadeLight : MonoBehaviour
-    {
-        public float Duration = 0.3f, StartIntensity = 5f;
-        float t;
-        Light l;
-        void Awake() { l = GetComponent<Light>(); }
-        void Update()
-        {
-            t += Time.deltaTime;
-            if (l) l.intensity = StartIntensity * (1f - t / Duration);
-            if (t >= Duration) Destroy(gameObject);
-        }
-    }
-
-    public class LineFade : MonoBehaviour
-    {
-        public float Duration = 0.3f;
-        float t;
-        LineRenderer lr;
-        void Awake() { lr = GetComponent<LineRenderer>(); }
-        void Update()
-        {
-            t += Time.deltaTime;
-            if (lr) lr.widthMultiplier = 0.22f * (1f - t / Duration) * (Random.value > 0.3f ? 1f : 0.4f);
-            if (t >= Duration) { if (lr) Destroy(lr.material); Destroy(gameObject); }
-        }
-    }
-
-    public class DecalAnim : MonoBehaviour
-    {
-        public float StartSize = 1, EndSize = 2, Duration = 0.4f, Spin;
-        public Color BaseColor = Color.white;
-        float t;
-        Material m;
-        void Start()
-        {
-            m = GetComponent<MeshRenderer>().sharedMaterial;
-            transform.localScale = Vector3.one * StartSize;
-        }
-        void Update()
-        {
-            t += Time.deltaTime;
-            float k = Mathf.Clamp01(t / Duration);
-            transform.localScale = Vector3.one * Mathf.Lerp(StartSize, EndSize, 1f - (1f - k) * (1f - k));
-            if (Spin != 0) transform.Rotate(0, 0, Spin * Time.deltaTime, Space.Self);
-            float a = k < 0.6f ? 1f : 1f - (k - 0.6f) / 0.4f;
-            if (m) Mats.SetMainColor(m, BaseColor * a);
-            if (t >= Duration) { if (m) Destroy(m); Destroy(gameObject); }
-        }
-    }
 }

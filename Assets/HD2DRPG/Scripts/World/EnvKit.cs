@@ -17,7 +17,7 @@ namespace HD2DRPG
         static GameObject Quad(string name, Transform parent, Material mat, bool shadows = false)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            Object.Destroy(go.GetComponent<Collider>());
+            Object.DestroyImmediate(go.GetComponent<Collider>());
             go.name = name;
             go.transform.SetParent(parent, false);
             var r = go.GetComponent<MeshRenderer>();
@@ -60,6 +60,7 @@ namespace HD2DRPG
             main.maxParticles = 200;
             var em = ps.emission;
             em.rateOverTime = rate;
+            main.playOnAwake = true; // keeps running when loaded from a saved scene
             var shape = ps.shape;
             shape.radius = radius;
             var vel = ps.velocityOverLifetime;
@@ -84,13 +85,13 @@ namespace HD2DRPG
             root.position = wallFacePos + Vector3.up * height;
 
             var bracket = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(bracket.GetComponent<Collider>());
+            Object.DestroyImmediate(bracket.GetComponent<Collider>());
             bracket.transform.SetParent(root, false);
             bracket.transform.position = root.position + facing * 0.12f - Vector3.up * 0.18f;
             bracket.transform.localScale = new Vector3(0.14f, 0.36f, 0.14f);
             bracket.GetComponent<MeshRenderer>().sharedMaterial = DarkMetalMat;
             var cup = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(cup.GetComponent<Collider>());
+            Object.DestroyImmediate(cup.GetComponent<Collider>());
             cup.transform.SetParent(root, false);
             cup.transform.position = root.position + facing * 0.22f;
             cup.transform.localScale = new Vector3(0.26f, 0.12f, 0.26f);
@@ -199,6 +200,9 @@ namespace HD2DRPG
             fc.Frames = new[] { "flame1", "flame2" };
             fc.Fps = 9f;
             Ambient(root, pos + Vector3.up * 1.5f, fireColor, 10f, 0.08f, 1.8f, new Vector3(0, 1.1f, 0), 0.25f);
+            var bc = root.gameObject.AddComponent<BoxCollider>();
+            bc.center = new Vector3(0, 0.6f, 0);
+            bc.size = new Vector3(0.85f, 1.2f, 0.85f);
             return PointLight(root, pos + Vector3.up * 1.9f, fireColor, 3.4f, 9f, true);
         }
 
@@ -219,12 +223,16 @@ namespace HD2DRPG
             var sp = circle.AddComponent<Spinner>();
             sp.Axis = Vector3.forward; sp.Speed = 20f;
             PointLight(root.transform, pos + Vector3.up * 1.2f, new Color(0.4f, 0.75f, 1f), 2.4f, 6f, false);
+            var cc = root.AddComponent<CapsuleCollider>();
+            cc.center = Vector3.up;
+            cc.radius = 0.5f;
+            cc.height = 2f;
             Ambient(root.transform, pos + Vector3.up * 0.5f, new Color(0.5f, 0.85f, 1f), 6f, 0.07f, 2f, new Vector3(0, 0.6f, 0), 0.6f);
             return root;
         }
 
         /// <summary>The Dark Lord's throne on a raised dais.</summary>
-        public static void Throne(Transform parent, Vector3 pos)
+        public static Transform Throne(Transform parent, Vector3 pos)
         {
             var root = new GameObject("Throne").transform;
             root.SetParent(parent, false);
@@ -250,6 +258,10 @@ namespace HD2DRPG
             gem.transform.position = pos + new Vector3(0, 2.7f, 0.28f);
             gem.transform.localScale = Vector3.one * 0.5f;
             PointLight(root, pos + new Vector3(0, 2.6f, -0.3f), new Color(0.7f, 0.3f, 1f), 1.6f, 4f, false);
+            var bc = root.gameObject.AddComponent<BoxCollider>();
+            bc.center = new Vector3(0, 1f, -0.3f);
+            bc.size = new Vector3(3.2f, 2f, 1.8f);
+            return root;
         }
 
         /// <summary>Huge red rose window behind the throne with a slowly turning arcane sigil.</summary>

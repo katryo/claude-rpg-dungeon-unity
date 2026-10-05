@@ -26,6 +26,9 @@ namespace HD2DRPG
         CameraRig rig;
         Light moon;
         string lastArea;
+        CastleRoot bakedCastle;
+        Color nightMoonColor, nightAmbientSky, nightAmbientEquator, nightFog;
+        float nightMoonIntensity;
 
         public string LocationName =>
             World != null && Party != null && Party.Leader != null ? World.Map.AreaName(Party.Leader.transform.position) : "";
@@ -37,16 +40,17 @@ namespace HD2DRPG
             Application.targetFrameRate = 60;
             Database.Build();
             PixelArt.Load();
-            RemoveSceneDefaults();
+            bakedCastle = Object.FindAnyObjectByType<CastleRoot>();
+            RemoveSceneDefaults(bakedCastle != null ? bakedCastle.Moon : null);
         }
 
         /// <summary>The project runs from any scene: disable stray cameras/lights from templates.</summary>
-        static void RemoveSceneDefaults()
+        static void RemoveSceneDefaults(Light keepMoon)
         {
             foreach (var cam in Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
                 if (cam.GetComponent<CameraRig>() == null) cam.gameObject.SetActive(false);
             foreach (var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if (l.type == LightType.Directional) l.gameObject.SetActive(false);
+                if (l.type == LightType.Directional && l != keepMoon) l.gameObject.SetActive(false);
         }
 
         IEnumerator Start()
@@ -57,7 +61,8 @@ namespace HD2DRPG
             yield return null;
 
             State = PartyState.NewGame();
-            World = CastleBuilder.Build(transform, State);
+            // Use the castle baked into the scene (editable in the editor) or generate one.
+            World = bakedCastle != null ? bakedCastle.ToResult() : CastleBuilder.Build(transform, State);
             Party = new GameObject("Party").AddComponent<PartyController>();
             Party.transform.SetParent(transform, false);
             Party.Init(World.Map, State, World.Start);
@@ -72,6 +77,27 @@ namespace HD2DRPG
 
         void SetupEnvironment()
         {
+            if (bakedCastle != null && bakedCastle.Moon != null)
+            {
+                // Baked scenes keep their own lighting settings (ambient, fog) and moonlight.
+                moon = bakedCastle.Moon;
+            }
+            else moon = CreateDefaultEnvironment(transform);
+            nightMoonColor = moon.color;
+            nightMoonIntensity = moon.intensity;
+            nightAmbientSky = RenderSettings.ambientSkyColor;
+            nightAmbientEquator = RenderSettings.ambientEquatorColor;
+            nightFog = RenderSettings.fogColor;
+
+            rig = CameraRig.Create();
+            rig.transform.SetParent(transform, false);
+            PostFX.Create(rig.Cam).transform.SetParent(transform, false);
+            AudioManager.Create(transform);
+        }
+
+        /// <summary>Night-time ambient light, fog and moonlight. Also used by the scene baker.</summary>
+        public static Light CreateDefaultEnvironment(Transform parent)
+        {
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = new Color(0.24f, 0.21f, 0.38f);
             RenderSettings.ambientEquatorColor = new Color(0.15f, 0.12f, 0.23f);
@@ -83,20 +109,16 @@ namespace HD2DRPG
             RenderSettings.skybox = null;
 
             var moonGo = new GameObject("Moonlight");
-            moonGo.transform.SetParent(transform, false);
+            moonGo.transform.SetParent(parent, false);
             moonGo.transform.rotation = Quaternion.Euler(52f, 28f, 0f);
-            moon = moonGo.AddComponent<Light>();
+            var moon = moonGo.AddComponent<Light>();
             moon.type = LightType.Directional;
             moon.color = new Color(0.6f, 0.66f, 1f);
             moon.intensity = 0.5f;
             moon.shadows = LightShadows.Soft;
             moon.shadowStrength = 0.75f;
             RenderSettings.sun = moon;
-
-            rig = CameraRig.Create();
-            rig.transform.SetParent(transform, false);
-            PostFX.Create(rig.Cam).transform.SetParent(transform, false);
-            AudioManager.Create(transform);
+            return moon;
         }
 
         void SetMode(GameMode m)
@@ -113,7 +135,7 @@ namespace HD2DRPG
             SetMode(GameMode.Title);
             UI.SetFieldHudVisible(false);
             var map = World.Map;
-            Vector3 throne = map.TileToWorld(map.Find('T'));
+            Vector3 throne = World.ThronePos;
             rig.SetFixedShot(throne + new Vector3(0, 7.5f, -20f), throne + new Vector3(0, 2.5f, -1f), 30f, true);
             AudioManager.Music("bgm_castle", 1.5f);
             yield return UI.Fader.To(0f, 1.5f);
@@ -419,10 +441,11 @@ namespace HD2DRPG
             SetMode(GameMode.Ending);
             boss.Restore(true);
             var map = World.Map;
-            Vector3 stand = map.TileToWorld(map.Find('B')) + new Vector3(0, 0, -1f);
+            Vector3 stand = World.Boss != null ? World.Boss.transform.position + new Vector3(0, 0, -1.55f)
+                                               : map.TileToWorld(map.Find('B')) + new Vector3(0, 0, -1f);
             Party.Init(map, State, stand);
             Party.Leader.FacingRight = true;
-            Vector3 throne = map.TileToWorld(map.Find('T'));
+            Vector3 throne = World.ThronePos;
             rig.SetFixedShot(stand + new Vector3(0, 4f, -9f), stand + new Vector3(0, 1.4f, 1.5f), 32f, true);
             yield return UI.Fader.To(0f, 1f);
             // the Dark Lord's last moments, as a fading silhouette on the throne
@@ -484,11 +507,11 @@ namespace HD2DRPG
         void SetDawn(bool dawn)
         {
             if (dawn) return;
-            moon.color = new Color(0.6f, 0.66f, 1f);
-            moon.intensity = 0.5f;
-            RenderSettings.ambientSkyColor = new Color(0.24f, 0.21f, 0.38f);
-            RenderSettings.ambientEquatorColor = new Color(0.15f, 0.12f, 0.23f);
-            RenderSettings.fogColor = new Color(0.05f, 0.035f, 0.09f);
+            moon.color = nightMoonColor;
+            moon.intensity = nightMoonIntensity;
+            RenderSettings.ambientSkyColor = nightAmbientSky;
+            RenderSettings.ambientEquatorColor = nightAmbientEquator;
+            RenderSettings.fogColor = nightFog;
             if (rig && rig.Cam) rig.Cam.backgroundColor = new Color(0.02f, 0.012f, 0.035f);
         }
     }

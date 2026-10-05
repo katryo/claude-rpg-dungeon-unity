@@ -118,25 +118,8 @@ namespace HD2DRPG
         public Vector2Int WorldToTile(Vector3 p) =>
             new Vector2Int(Mathf.RoundToInt(p.x), Height - 1 - Mathf.RoundToInt(p.z));
 
-        /// <summary>True if a circle of radius r at world position p overlaps no solid tile.</summary>
-        public bool CanStand(Vector3 p, float r)
-        {
-            int x0 = Mathf.FloorToInt(p.x - r + 0.5f), x1 = Mathf.FloorToInt(p.x + r + 0.5f);
-            int z0 = Mathf.FloorToInt(p.z - r + 0.5f), z1 = Mathf.FloorToInt(p.z + r + 0.5f);
-            for (int x = x0; x <= x1; x++)
-                for (int z = z0; z <= z1; z++)
-                {
-                    int row = Height - 1 - z;
-                    if (IsWalkable(x, row)) continue;
-                    // circle vs tile AABB
-                    float cx = Mathf.Clamp(p.x, x - 0.5f, x + 0.5f);
-                    float cz = Mathf.Clamp(p.z, z - 0.5f, z + 0.5f);
-                    float dx = p.x - cx, dz = p.z - cz;
-                    float rr = At(x, row) == 'P' ? r * 0.7f : r; // pillars are round-ish
-                    if (dx * dx + dz * dz < rr * rr) return false;
-                }
-            return true;
-        }
+        /// <summary>True if a circle of radius r at world position p overlaps no solid collider.</summary>
+        public bool CanStand(Vector3 p, float r) => WorldCollision.CanStand(p, r);
 
         public Vector2Int Find(char c)
         {

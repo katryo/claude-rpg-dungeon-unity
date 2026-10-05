@@ -18,6 +18,7 @@ namespace HD2DRPG
             public List<EnemySymbol> Symbols = new List<EnemySymbol>();
             public EnemySymbol Boss;
             public Vector3 Start;
+            public Vector3 ThronePos;
         }
 
         public static Result Build(Transform parent, PartyState state)
@@ -30,9 +31,21 @@ namespace HD2DRPG
 
             BuildFloor(map, root);
             BuildWalls(map, root);
-            BuildProps(map, root, res, state);
+            var castle = root.gameObject.AddComponent<CastleRoot>();
+            BuildProps(map, root, res, state, castle);
             BuildAmbience(map, root);
-            res.Start = map.TileToWorld(map.Find('@'));
+
+            var start = new GameObject("PartyStart").transform;
+            start.SetParent(root, false);
+            start.position = map.TileToWorld(map.Find('@'));
+            castle.PartyStart = start;
+            castle.Chests = res.Chests;
+            castle.Crystals = res.Crystals;
+            castle.Symbols = res.Symbols;
+            castle.Boss = res.Boss;
+            res.Start = start.position;
+            res.ThronePos = castle.Throne != null ? castle.Throne.position : map.TileToWorld(map.Find('T'));
+            Physics.SyncTransforms();
             return res;
         }
 
@@ -104,6 +117,13 @@ namespace HD2DRPG
             mb.FaceUV(new Vector3(a.x, a.y, a.z), new Vector3(w, 0, 0), new Vector3(0, 0, len), new Vector2(1f, len));
         }
 
+        static void AddWallCollider(GameObject go, Vector3 tileCenter)
+        {
+            var bc = go.AddComponent<BoxCollider>();
+            bc.center = go.transform.InverseTransformPoint(tileCenter + Vector3.up * 1.5f);
+            bc.size = new Vector3(1f, 3f, 1f);
+        }
+
         static void BuildWalls(CastleMap map, Transform root)
         {
             var wallsRoot = new GameObject("Walls").transform;
@@ -112,6 +132,7 @@ namespace HD2DRPG
             // camera-side (low) walls in one mesh
             var lowSides = new MeshBuilder();
             var lowTops = new MeshBuilder();
+            var lowTiles = new List<Vector3>();
 
             for (int row = 0; row < map.Height; row++)
             {
@@ -120,6 +141,7 @@ namespace HD2DRPG
                 var lowRowSides = new MeshBuilder();
                 var lowRowTops = new MeshBuilder();
                 var decorTiles = new List<Vector2Int>();
+                var rowTiles = new List<Vector3>();
 
                 for (int x = 0; x < map.Width; x++)
                 {
@@ -135,6 +157,7 @@ namespace HD2DRPG
                     {
                         lowSides.Box(min, min + new Vector3(1, LowWall, 1), faces);
                         lowTops.Box(min, min + new Vector3(1, LowWall, 1), MeshBuilder.Faces.Top);
+                        lowTiles.Add(c);
                     }
                     else
                     {
@@ -142,6 +165,7 @@ namespace HD2DRPG
                         tallTops.Box(min, min + new Vector3(1, TallWall, 1), MeshBuilder.Faces.Top);
                         lowRowSides.Box(min, min + new Vector3(1, LowWall, 1), faces);
                         lowRowTops.Box(min, min + new Vector3(1, LowWall, 1), MeshBuilder.Faces.Top);
+                        rowTiles.Add(c);
                         char ch = map.At(x, row);
                         if (ch != '#') decorTiles.Add(new Vector2Int(x, row));
                     }
@@ -159,6 +183,7 @@ namespace HD2DRPG
                 lowRowSides.Create("Sides", low.transform, EnvKit.WallMat);
                 lowRowTops.Create("Tops", low.transform, EnvKit.TrimMat);
                 low.SetActive(false);
+                foreach (var c in rowTiles) AddWallCollider(rowRoot.gameObject, c);
 
                 var lights = new List<Light>();
                 foreach (var t in decorTiles)
@@ -178,7 +203,8 @@ namespace HD2DRPG
 
             if (lowSides.VertexCount > 0)
             {
-                lowSides.Create("CameraSideWalls", wallsRoot, EnvKit.WallMat);
+                var csw = lowSides.Create("CameraSideWalls", wallsRoot, EnvKit.WallMat);
+                foreach (var c in lowTiles) AddWallCollider(csw, c);
                 lowTops.Create("CameraSideWallTops", wallsRoot, EnvKit.TrimMat);
             }
         }
@@ -206,7 +232,7 @@ namespace HD2DRPG
             return null;
         }
 
-        static void BuildProps(CastleMap map, Transform root, Result res, PartyState state)
+        static void BuildProps(CastleMap map, Transform root, Result res, PartyState state, CastleRoot castle)
         {
             var props = new GameObject("Props").transform;
             props.SetParent(root, false);
@@ -227,10 +253,14 @@ namespace HD2DRPG
                             var cut = holder.AddComponent<Cutaway>();
                             cut.Z = p.z; cut.X = p.x; cut.XRange = 1.8f; cut.Margin = 0.2f; cut.LowScale = 0.16f;
                             cut.Tall = pillar;
+                            var cap = holder.AddComponent<CapsuleCollider>();
+                            cap.center = p + Vector3.up * 1.5f;
+                            cap.radius = 0.42f;
+                            cap.height = 3f;
                             break;
                         }
                         case 'T':
-                            EnvKit.Throne(props, p + new Vector3(0, 0, 0.1f));
+                            castle.Throne = EnvKit.Throne(props, p + new Vector3(0, 0, 0.1f));
                             break;
                         case 'b':
                             EnvKit.Brazier(props, p, new Color(1f, 0.4f, 0.2f));
@@ -252,7 +282,7 @@ namespace HD2DRPG
                         }
                         case 'B':
                         {
-                            var boss = EnemySymbol.Create(props, map, p + new Vector3(0, 0, 0.55f), "boss", "darklord", false, 1.45f, Color.white);
+                            var boss = EnemySymbol.Create(props, p + new Vector3(0, 0, 0.55f), "boss", "darklord", false, 1.45f, Color.white);
                             boss.IsBoss = true;
                             res.Boss = boss;
                             if (state.Flags.Contains("boss")) boss.Restore(true);
@@ -261,7 +291,7 @@ namespace HD2DRPG
                     }
                     if (CastleMap.EncounterSpots.TryGetValue(tile, out var enc))
                     {
-                        var sym = EnemySymbol.Create(props, map, p, enc.Id, enc.Sprite, enc.Wanders, enc.Scale, enc.Tint);
+                        var sym = EnemySymbol.Create(props, p, enc.Id, enc.Sprite, enc.Wanders, enc.Scale, enc.Tint);
                         res.Symbols.Add(sym);
                         if (state.Flags.Contains("enc_" + enc.Id)) sym.Restore(true);
                     }

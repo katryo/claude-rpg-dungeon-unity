@@ -9,10 +9,19 @@ namespace HD2DRPG
     /// yaws to face the camera (tilted back slightly, as in HD-2D titles), with frame animation,
     /// facing flip, idle breathing, hit flashes and a soft ground shadow.
     /// </summary>
+    [SelectionBase]
     public class SpriteActor : MonoBehaviour
     {
+        [System.Serializable]
+        public class Anim
+        {
+            public string Name;
+            public string[] Frames;
+        }
+
+        [Tooltip("Sprite id from Resources/HD2D/sprites.txt shown when idle.")]
         public string IdleFrame;
-        public readonly Dictionary<string, string[]> Anims = new Dictionary<string, string[]>();
+        public List<Anim> Anims = new List<Anim>();
         public float Scale = 1f;
         public bool FacingRight = true;
         public bool Floating;
@@ -21,11 +30,11 @@ namespace HD2DRPG
         /// <summary>Vertical squash used for the knocked-out (kneeling) pose.</summary>
         public float KneelScale = 1f;
 
-        Transform quad;
-        Transform visualRoot;
-        MeshRenderer quadRenderer;
+        [SerializeField, HideInInspector] Transform quad;
+        [SerializeField, HideInInspector] Transform visualRoot;
+        [SerializeField, HideInInspector] MeshRenderer quadRenderer;
+        [SerializeField, HideInInspector] Transform shadow;
         Material mat;
-        Transform shadow;
         string currentAnim;
         string[] frames;
         float fps = 6f;
@@ -53,6 +62,17 @@ namespace HD2DRPG
             return a;
         }
 
+        void Awake()
+        {
+            // When loaded from a saved scene, work on a per-instance copy of the baked material.
+            if (Application.isPlaying && quadRenderer != null && mat == null)
+            {
+                mat = quadRenderer.material;
+                shownFrame = null;
+                bobPhase = Random.value * 10f;
+            }
+        }
+
         void Build()
         {
             visualRoot = new GameObject("Visual").transform;
@@ -71,7 +91,7 @@ namespace HD2DRPG
 
             // soft blob shadow to ground the sprite
             var sh = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            Destroy(sh.GetComponent<Collider>());
+            DestroyImmediate(sh.GetComponent<Collider>());
             sh.name = "BlobShadow";
             sh.transform.SetParent(transform, false);
             sh.transform.localRotation = Quaternion.Euler(90, 0, 0);
@@ -114,12 +134,18 @@ namespace HD2DRPG
             if (shadow) shadow.gameObject.SetActive(v);
         }
 
-        public void AddAnim(string name, params string[] frameIds) => Anims[name] = frameIds;
+        public void AddAnim(string name, params string[] frameIds)
+        {
+            var a = Anims.Find(x => x.Name == name);
+            if (a == null) Anims.Add(a = new Anim { Name = name });
+            a.Frames = frameIds;
+        }
 
         public void Play(string anim, float framesPerSecond = 6f, bool looping = true)
         {
             if (currentAnim == anim && looping) return;
-            if (!Anims.TryGetValue(anim, out var f) || f == null || f.Length == 0)
+            var f = Anims.Find(x => x.Name == anim)?.Frames;
+            if (f == null || f.Length == 0)
             {
                 f = new[] { IdleFrame };
             }
@@ -218,7 +244,7 @@ namespace HD2DRPG
 
         void OnDestroy()
         {
-            if (mat != null) Destroy(mat);
+            if (Application.isPlaying && mat != null) Destroy(mat);
         }
     }
 }

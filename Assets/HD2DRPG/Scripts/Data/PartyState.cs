@@ -145,15 +145,12 @@ namespace HD2DRPG
         {
             Database.Build();
             var p = new PartyState();
-            p.Members.Add(new PartyMember(Database.Characters["aren"], Database.StartLevel));
-            p.Members.Add(new PartyMember(Database.Characters["gareth"], Database.StartLevel));
-            p.Members.Add(new PartyMember(Database.Characters["theia"], Database.StartLevel));
-            p.AddItem("potion", 6);
-            p.AddItem("ether", 3);
-            p.AddItem("phoenix_feather", 2);
-            p.AddItem("greek_fire", 1);
-            p.AddEquip("hermes_sandals", 1);
-            p.Gold = 480;
+            foreach (var id in Database.PartyOrder)
+                if (Database.Characters.TryGetValue(id, out var def))
+                    p.Members.Add(new PartyMember(def, Database.StartLevel));
+            foreach (var it in Database.StartItems) if (Database.Items.ContainsKey(it.Id)) p.AddItem(it.Id, it.Count);
+            foreach (var it in Database.StartEquipment) if (Database.Equips.ContainsKey(it.Id)) p.AddEquip(it.Id, it.Count);
+            p.Gold = Database.StartGold;
             return p;
         }
 

@@ -13,20 +13,100 @@ namespace HD2DRPG
         public static readonly Dictionary<string, EnemyDef> Enemies = new Dictionary<string, EnemyDef>();
         public static readonly Dictionary<string, string[]> Encounters = new Dictionary<string, string[]>();
 
-        public const int StartLevel = 10;
+        public static int StartLevel = 10;
         public const int MaxLevel = 50;
+        public static int StartGold = 480;
+        public static readonly List<string> PartyOrder = new List<string>();
+        public static readonly List<ItemStack> StartItems = new List<ItemStack>();
+        public static readonly List<ItemStack> StartEquipment = new List<ItemStack>();
+
+        /// <summary>Path (under Resources) of the editable data registry created by "Bake Data Assets".</summary>
+        public const string DataAssetPath = "HD2D/GameData";
 
         static bool built;
+
+        /// <summary>True when the content came from the ScriptableObject assets rather than code.</summary>
+        public static bool LoadedFromAssets { get; private set; }
 
         public static void Build()
         {
             if (built) return;
             built = true;
+            var data = Resources.Load<GameDataAsset>(DataAssetPath);
+            if (data != null && data.Characters.Count > 0)
+            {
+                LoadFrom(data);
+                LoadedFromAssets = true;
+            }
+            else BuildDefaults();
+        }
+
+        /// <summary>Forgets everything so the next <see cref="Build"/> reloads (used by editor tools).</summary>
+        public static void Reset()
+        {
+            built = false;
+            LoadedFromAssets = false;
+            Characters.Clear(); Skills.Clear(); Equips.Clear(); Items.Clear(); Enemies.Clear(); Encounters.Clear();
+            PartyOrder.Clear(); StartItems.Clear(); StartEquipment.Clear();
+        }
+
+        /// <summary>Fills the tables with the built-in content defined in this file.</summary>
+        public static void BuildDefaults()
+        {
+            Reset();
+            built = true;
+            StartLevel = 10;
+            StartGold = 480;
             BuildSkills();
             BuildEquipment();
             BuildItems();
             BuildCharacters();
             BuildEnemies();
+            PartyOrder.AddRange(new[] { "aren", "gareth", "theia" });
+            StartItems.Add(new ItemStack("potion", 6));
+            StartItems.Add(new ItemStack("ether", 3));
+            StartItems.Add(new ItemStack("phoenix_feather", 2));
+            StartItems.Add(new ItemStack("greek_fire", 1));
+            StartEquipment.Add(new ItemStack("hermes_sandals", 1));
+        }
+
+        static void LoadFrom(GameDataAsset data)
+        {
+            StartLevel = Mathf.Max(1, data.StartLevel);
+            StartGold = data.StartGold;
+            foreach (var a in data.Skills) if (a != null && a.Def != null) Skills[a.Def.Id] = a.Def;
+            foreach (var a in data.Equipment) if (a != null && a.Def != null) Equips[a.Def.Id] = Normalize(a.Def);
+            foreach (var a in data.Items) if (a != null && a.Def != null) Items[a.Def.Id] = a.Def;
+            foreach (var a in data.Enemies) if (a != null && a.Def != null) Enemies[a.Def.Id] = Normalize(a.Def);
+            foreach (var a in data.Characters) if (a != null && a.Def != null) Characters[a.Def.Id] = Normalize(a.Def);
+            foreach (var e in data.Encounters) if (e != null && !string.IsNullOrEmpty(e.Id)) Encounters[e.Id] = e.Enemies;
+            foreach (var c in data.Characters) if (c != null && c.Def != null) PartyOrder.Add(c.Def.Id);
+            StartItems.AddRange(data.StartItems);
+            StartEquipment.AddRange(data.StartEquipment);
+        }
+
+        // Unity serializes null strings as "", which the game treats as "nothing".
+        static string N(string s) => string.IsNullOrEmpty(s) ? null : s;
+
+        static CharacterDef Normalize(CharacterDef d)
+        {
+            if (d.StartEquip == null || d.StartEquip.Length < 4) System.Array.Resize(ref d.StartEquip, 4);
+            for (int i = 0; i < d.StartEquip.Length; i++) d.StartEquip[i] = N(d.StartEquip[i]);
+            return d;
+        }
+
+        static EnemyDef Normalize(EnemyDef d)
+        {
+            d.AttackSpriteId = N(d.AttackSpriteId);
+            d.Drop = N(d.Drop);
+            foreach (var s in d.Skills) s.Line = N(s.Line);
+            return d;
+        }
+
+        static EquipDef Normalize(EquipDef d)
+        {
+            if (d.Users == null) d.Users = new string[0];
+            return d;
         }
 
         /// <summary>Total experience required to reach a level.</summary>

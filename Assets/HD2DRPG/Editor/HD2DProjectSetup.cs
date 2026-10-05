@@ -40,6 +40,9 @@ namespace HD2DRPG.EditorTools
             if (pipelineOk && materialsOk && sceneOk) return;
             Debug.Log("[HD-2D RPG] First-time project setup...");
             Setup(false);
+            // First time only: put the castle and the data assets into the project so they can be edited.
+            if (!sceneOk && File.Exists(ScenePath) && Shader.Find("Universal Render Pipeline/Lit") != null)
+                HD2DSceneBaker.BakeAll(false);
         }
 
         [MenuItem("HD-2D RPG/Run Project Setup", priority = 0)]
@@ -53,7 +56,7 @@ namespace HD2DRPG.EditorTools
                 EditorSceneManager.OpenScene(ScenePath);
         }
 
-        static void Setup(bool interactive)
+        public static void Setup(bool interactive)
         {
             EnsureFolder(SettingsDir);
             EnsureFolder(MaterialsDir);

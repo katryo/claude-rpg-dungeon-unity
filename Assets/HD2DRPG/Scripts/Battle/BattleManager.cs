@@ -32,8 +32,14 @@ namespace HD2DRPG
 
         public void Init(Transform parent)
         {
-            NormalStage = BattleStage.Build(parent, new Vector3(200, 0, 0), false);
-            BossStage = BattleStage.Build(parent, new Vector3(260, 0, 0), true);
+            // Prefer arenas baked into the scene (editable), otherwise build them.
+            foreach (var st in Object.FindObjectsByType<BattleStage>(FindObjectsSortMode.None))
+            {
+                if (st.IsBoss) { if (BossStage == null) BossStage = st; }
+                else if (NormalStage == null) NormalStage = st;
+            }
+            if (NormalStage == null) NormalStage = BattleStage.Build(parent, new Vector3(200, 0, 0), false);
+            if (BossStage == null) BossStage = BattleStage.Build(parent, new Vector3(260, 0, 0), true);
         }
 
         IEnumerable<Battler> All => party.Concat(enemies);

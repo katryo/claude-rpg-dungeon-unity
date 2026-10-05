@@ -20,15 +20,42 @@ storm the Dark Lord's castle, fight Octopath-style "Shield & Break" battles and 
 
 1. Open the folder with **Unity 6.3 LTS** (6000.3.x). The required packages (URP, Input System, uGUI)
    are listed in `Packages/manifest.json` and are fetched automatically.
-2. On first import the editor script `HD2DProjectSetup` configures everything:
-   a URP pipeline asset with a Forward+ renderer and post-processing, template materials,
-   Linear color space and the scene `Assets/Scenes/Main.unity`.
-   You can re-run it any time from **HD-2D RPG ▸ Run Project Setup**.
+2. On first import the editor scripts set everything up automatically:
+   * a URP pipeline asset with a Forward+ renderer and post-processing, template materials and Linear color;
+   * `Assets/Scenes/Main.unity` with the **whole castle, both battle arenas and the moonlight baked into it**;
+   * editable **data assets** for all characters, skills, equipment, items, enemies and encounters.
 3. Open `Assets/Scenes/Main.unity` (or **HD-2D RPG ▸ Open Main Scene**) and press **Play**.
+4. Commit the generated `Assets/` content so your team shares the same scene and data.
 
-> The game also boots in *any* scene via `[RuntimeInitializeOnLoadMethod]`, so pressing Play
-> in an empty scene works too. If Unity asks to enable the new Input System backends, either
-> answer works: input supports both the Input System package and the legacy Input Manager.
+If the automatic bake was skipped (e.g. another scene had unsaved changes), run
+**HD-2D RPG ▸ Bake Everything (Data + Scene)**.
+
+> If Unity asks to enable the new Input System backends, either answer works: input supports
+> both the Input System package and the legacy Input Manager.
+
+## Editing the game in Unity
+
+| What | Where |
+|---|---|
+| Castle layout: walls, pillars, torches, windows, banners, throne, braziers | `Castle` object in `Main.unity` — move, duplicate or delete anything. Collision comes from the colliders, so walkable space follows your edits. |
+| Treasure | `Chest` components: edit `Contents` (`item:<id>`, `equip:<id>`, `gold:<n>`) |
+| Enemy placement | `Symbol_*` objects: `EncounterId`, wander radius, chase range. The boss symbol has `IsBoss`. |
+| Party start position | `Castle/PartyStart` |
+| After adding/removing chests or enemies | Right-click the `CastleRoot` component ▸ **Refresh Lists** (also done automatically at play time) |
+| Battle arenas | `BattleStage` and `BossStage` objects (x = 200 / 260) |
+| Lighting & fog | **Window ▸ Rendering ▸ Lighting** (scene settings) and the `Moonlight` object |
+| Post-processing (bloom, tilt-shift DoF, vignette, grading) | `Assets/HD2DRPG/Resources/HD2D/HD2D_PostFX.asset` |
+| Characters, skills, equipment, items, enemies | `Assets/HD2DRPG/Data/**` — one asset per entry |
+| Party order, starting level/gold/items, encounters | `Assets/HD2DRPG/Resources/HD2D/GameData.asset` (register new data assets here) |
+| Generated meshes, materials, textures | `Assets/HD2DRPG/Baked/` |
+| Character pixel art & animation frames | `Assets/HD2DRPG/Resources/HD2D/sprites.txt` (the source for animated sprites) |
+
+Menu **HD-2D RPG** also offers **Bake Data Assets** (reset data to the defaults in `Database.cs`)
+and **Bake Castle Into Scene** (rebuild the castle from the ASCII map in `CastleMap.cs`). Both
+overwrite manual edits, and ask for confirmation first.
+
+Without any baked content the game still runs: it falls back to generating the castle and
+using the built-in data at runtime.
 
 ## Controls
 
@@ -82,17 +109,19 @@ storm the Dark Lord's castle, fight Octopath-style "Shield & Break" battles and 
 ```
 Assets/HD2DRPG/
   Editor/HD2DProjectSetup.cs   URP + materials + scene setup (auto-runs on first import)
+  Editor/HD2DSceneBaker.cs     bakes data assets and the castle/arenas into the scene
   Resources/HD2D/sprites.txt   all pixel art as editable ASCII (palette + rows)
   Scripts/
     Core/    Game (state machine & story), GameInput, PostFX, Mats (URP materials)
-    Data/    Defs, Database (party, skills, equipment, items, enemies), PartyState
+    Data/    Defs, Database (built-in defaults + asset loading), *Asset ScriptableObjects, PartyState
     Art/     PixelArt (sprite parser), ProcTex (procedural stone, carpet, glass, FX textures)
     Audio/   Synth (procedural chiptune BGM + SFX), AudioManager
-    World/   CastleMap, CastleBuilder, EnvKit, SpriteActor, PartyController, CameraRig, FX, Decor
+    World/   CastleMap, CastleBuilder, CastleRoot, EnvKit, SpriteActor, PartyController, EnemySymbol,
+             Chest, SaveCrystal, CameraRig, FX and small behaviours (torch flicker, cut-away, billboards)
     Battle/  BattleManager, Battler, BattleStage, BattleFX
     UI/      UIKit, MenuScreen, BattleHUD, FieldUI
 ```
 
-Everything — art, music, geometry and UI — is generated from code and text at runtime, so the
-project has no binary assets. Tweak `Database.cs` for balance, `CastleMap.cs` for the level
-layout, and `sprites.txt` to redraw characters.
+The repository itself contains only code and text: art, music, geometry and UI are generated
+procedurally. The editor bake turns that into regular scene objects and assets for editing; the
+UI and music remain code-driven.

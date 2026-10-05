@@ -97,6 +97,7 @@ namespace HD2DRPG
         }
     }
 
+    [System.Serializable]
     public class SkillDef
     {
         public string Id, Name, Description;
@@ -115,6 +116,7 @@ namespace HD2DRPG
         public string Fx = "slash";
     }
 
+    [System.Serializable]
     public class ItemDef
     {
         public string Id, Name, Description;
@@ -129,6 +131,7 @@ namespace HD2DRPG
         public bool BattleOnly => Damage > 0;
     }
 
+    [System.Serializable]
     public class EquipDef
     {
         public string Id, Name, Description;
@@ -147,6 +150,7 @@ namespace HD2DRPG
         }
     }
 
+    [System.Serializable]
     public class EnemySkill
     {
         public string Name;
@@ -163,6 +167,7 @@ namespace HD2DRPG
         public string Line;
     }
 
+    [System.Serializable]
     public class EnemyDef
     {
         public string Id, Name, SpriteId, AttackSpriteId;
@@ -180,13 +185,41 @@ namespace HD2DRPG
         public int Actions = 1;
     }
 
+    /// <summary>A skill learned at a given level.</summary>
+    [System.Serializable]
+    public struct SkillLearn
+    {
+        public int level;
+        public string skillId;
+
+        public SkillLearn(int level, string skillId) { this.level = level; this.skillId = skillId; }
+
+        public static implicit operator SkillLearn((int level, string skillId) t) => new SkillLearn(t.level, t.skillId);
+    }
+
+    [System.Serializable]
+    public class EncounterDef
+    {
+        public string Id;
+        public string[] Enemies = new string[0];
+    }
+
+    [System.Serializable]
+    public struct ItemStack
+    {
+        public string Id;
+        public int Count;
+        public ItemStack(string id, int count) { Id = id; Count = count; }
+    }
+
+    [System.Serializable]
     public class CharacterDef
     {
         public string Id, Name, Title, SpritePrefix;
         public Stats BaseStats;  // at level 1
         public Stats Growth;     // per level (x10, i.e. 25 = +2.5 per level)
         public Element WeaponType;
-        public List<(int level, string skillId)> SkillTable = new List<(int, string)>();
+        public List<SkillLearn> SkillTable = new List<SkillLearn>();
         public string[] StartEquip;
         public Color ThemeColor;
         public string Bio;
