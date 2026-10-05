@@ -43,6 +43,8 @@ storm the Dark Lord's castle, fight Octopath-style "Shield & Break" battles and 
 
 ## What's in the game
 
+<img src="Docs/castle_map.png" align="right" width="190" alt="Castle map: hall (bottom), gallery, throne room (top)">
+
 * **Exploration** – the castle is built from an ASCII map (`CastleMap.cs`): the *Hall of Ashes*,
   the *Moonlit Gallery* and the *Throne of Eternal Night*. Walls and pillars between the camera and
   the party sink away (diorama cut-away), the caravan of followers trails the leader, enemies are

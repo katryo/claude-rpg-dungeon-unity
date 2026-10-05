@@ -213,10 +213,9 @@ namespace HD2DRPG
                 for (int x = 0; x < W; x++)
                 {
                     Color c = new Color(0, 0, 0, 0);
-                    int tipDepth = Mathf.Abs(x - W / 2 + (x >= W / 2 ? 1 : 0));
-                    bool inCloth = y >= 6 - tipDepth / 2 || y > 6;
-                    if (y < 6 && tipDepth > (6 - y) * 1.4f) inCloth = false; // swallow-tail bottom
-                    if (y >= 6) inCloth = true;
+                    // pointed pennant tip at the bottom
+                    float fromCenter = Mathf.Abs(x - (W - 1) / 2f);
+                    bool inCloth = y >= 7 || fromCenter <= y * 1.15f;
                     if (inCloth)
                     {
                         c = Shade(cloth, 0.85f + 0.25f * Mathf.Sin(x * 0.7f) * 0.5f + Hash(x, y, 9) * 0.1f);
