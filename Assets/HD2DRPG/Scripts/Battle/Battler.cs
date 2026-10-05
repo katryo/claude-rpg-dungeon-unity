@@ -110,7 +110,7 @@ namespace HD2DRPG
             if (b == BuffType.AtkDown && Buffs.Remove(BuffType.AtkUp)) return;
             if (b == BuffType.DefUp && Buffs.Remove(BuffType.DefDown)) return;
             if (b == BuffType.DefDown && Buffs.Remove(BuffType.DefUp)) return;
-            Buffs[b] = Mathf.Max(turns, Buffs.TryGetValue(b, out int t) ? t : 0);
+            Buffs[b] = Mathf.Max(turns + 1, Buffs.TryGetValue(b, out int t) ? t : 0);
         }
 
         /// <summary>Called at the end of this battler's turn.</summary>

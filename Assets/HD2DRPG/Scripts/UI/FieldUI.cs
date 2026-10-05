@@ -248,6 +248,9 @@ namespace HD2DRPG
         public IEnumerator Credits()
         {
             var c = UIKit.Fill("Credits", root);
+            var shade = UIKit.Box(c, 0, 0, 1920, 1080, new Color(0, 0, 0, 0.92f), null, "Shade");
+            shade.rectTransform.anchorMin = Vector2.zero; shade.rectTransform.anchorMax = Vector2.one;
+            shade.rectTransform.offsetMin = shade.rectTransform.offsetMax = Vector2.zero;
             string[] lines =
             {
                 UIKit.Col("Chronicle of the Endless Night", UIKit.Gold), "",
@@ -262,7 +265,7 @@ namespace HD2DRPG
             float scroll = 0, target = 1100 + (lines.Length - 1) * 64 - 480;
             while (scroll < target)
             {
-                scroll += Time.deltaTime * 70f * (GameInput.Confirm ? 6f : 1f);
+                scroll += Time.deltaTime * 70f * (GameInput.Run || GameInput.Move.y < -0.5f ? 6f : 1f);
                 for (int i = 0; i < texts.Count; i++)
                     texts[i].rectTransform.anchoredPosition = new Vector2(0, -(1100 + i * 64 - scroll));
                 yield return null;

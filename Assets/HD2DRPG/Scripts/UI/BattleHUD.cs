@@ -358,6 +358,7 @@ namespace HD2DRPG
             float dur = 1.1f;
             for (float e = 0; e < dur; e += Time.deltaTime)
             {
+                if (t == null || Canvas == null) yield break;
                 float k = e / dur;
                 Vector2 basePos = UIKit.WorldToCanvas(Canvas, worldPos);
                 float rise = k < 0.15f ? Mathf.Lerp(0, 46, k / 0.15f) : 46 + (k - 0.15f) * 30f;
@@ -369,7 +370,7 @@ namespace HD2DRPG
                 t.color = c;
                 yield return null;
             }
-            Object.Destroy(t.gameObject);
+            if (t != null) Object.Destroy(t.gameObject);
         }
 
         /// <summary>Big centered flash text ("BREAK!", "VICTORY").</summary>
@@ -381,6 +382,7 @@ namespace HD2DRPG
             ol.effectDistance = new Vector2(4, -4);
             for (float e = 0; e < duration; e += Time.deltaTime)
             {
+                if (t == null || Canvas == null) yield break;
                 float k = e / duration;
                 float sc = k < 0.15f ? Mathf.Lerp(2.2f, 1f, k / 0.15f) : 1f + (k - 0.15f) * 0.08f;
                 t.rectTransform.localScale = new Vector3(sc, sc, 1);
@@ -389,7 +391,7 @@ namespace HD2DRPG
                 t.color = c;
                 yield return null;
             }
-            Object.Destroy(t.gameObject);
+            if (t != null) Object.Destroy(t.gameObject);
         }
 
         // ------------------------------------------------------------------ results

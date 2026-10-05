@@ -49,17 +49,17 @@ namespace HD2DRPG
 
             var floor = new MeshBuilder();
             for (float x = -W; x < W; x += 4)
-                floor.Face(o + new Vector3(x, 0, front), new Vector3(4, 0, 0), new Vector3(0, 0, back - front), 0.5f);
+                floor.Face(new Vector3(x, 0, front), new Vector3(4, 0, 0), new Vector3(0, 0, back - front), 0.5f);
             floor.Create("Floor", root, EnvKit.FloorMat, false);
 
             var walls = new MeshBuilder();
-            walls.Box(o + new Vector3(-W - 1, 0, back), o + new Vector3(W + 1, H, back + 1), MeshBuilder.Faces.South | MeshBuilder.Faces.Top);
-            walls.Box(o + new Vector3(-W - 1, 0, front), o + new Vector3(-W, H, back), MeshBuilder.Faces.East | MeshBuilder.Faces.Top);
-            walls.Box(o + new Vector3(W, 0, front), o + new Vector3(W + 1, H, back), MeshBuilder.Faces.West | MeshBuilder.Faces.Top);
+            walls.Box(new Vector3(-W - 1, 0, back), new Vector3(W + 1, H, back + 1), MeshBuilder.Faces.South | MeshBuilder.Faces.Top);
+            walls.Box(new Vector3(-W - 1, 0, front), new Vector3(-W, H, back), MeshBuilder.Faces.East | MeshBuilder.Faces.Top);
+            walls.Box(new Vector3(W, 0, front), new Vector3(W + 1, H, back), MeshBuilder.Faces.West | MeshBuilder.Faces.Top);
             walls.Create("Walls", root, EnvKit.WallMat);
             var trim = new MeshBuilder();
-            trim.Box(o + new Vector3(-W, 0, back - 0.35f), o + new Vector3(W, 0.5f, back), MeshBuilder.Faces.South | MeshBuilder.Faces.Top);
-            trim.Box(o + new Vector3(-W, H - 0.4f, back - 0.25f), o + new Vector3(W, H - 0.1f, back), MeshBuilder.Faces.South | MeshBuilder.Faces.Bottom);
+            trim.Box(new Vector3(-W, 0, back - 0.35f), new Vector3(W, 0.5f, back), MeshBuilder.Faces.South | MeshBuilder.Faces.Top);
+            trim.Box(new Vector3(-W, H - 0.4f, back - 0.25f), new Vector3(W, H - 0.1f, back), MeshBuilder.Faces.South | MeshBuilder.Faces.Bottom);
             trim.Create("Trim", root, EnvKit.TrimMat);
 
             Vector3 backFace = new Vector3(0, 0, back);
@@ -85,7 +85,7 @@ namespace HD2DRPG
             else
             {
                 var carpet = new MeshBuilder();
-                carpet.FaceUV(o + new Vector3(-1.5f, 0.012f, front), new Vector3(3, 0, 0), new Vector3(0, 0, back - front), new Vector2(1, back - front));
+                carpet.FaceUV(new Vector3(-1.5f, 0.012f, front), new Vector3(3, 0, 0), new Vector3(0, 0, back - front), new Vector2(1, back - front));
                 carpet.Create("Carpet", root, EnvKit.CarpetMat, false);
                 EnvKit.Throne(root, o + new Vector3(0, 0, back - 1.3f));
                 EnvKit.RoseWindow(root, o + backFace, Vector3.back);

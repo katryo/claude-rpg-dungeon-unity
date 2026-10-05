@@ -170,9 +170,9 @@ namespace HD2DRPG
                     if (!b.Alive || b.Broken) continue;
                     hud.ShowTurnOrder(order, i, nextOrder);
                     b.Defending = false;
+                    b.TickBuffs(); // tick at turn start so self-buffs last as long as allies' copies
                     if (b.IsPlayer) yield return PlayerTurn(b);
                     else yield return EnemyTurn(b);
-                    b.TickBuffs();
                     hud.RefreshParty(null, 0);
 
                     if (bossPhasePending) { bossPhasePending = false; yield return BossPhaseTwo(); nextOrder = ComputeOrder(); }
@@ -637,7 +637,10 @@ namespace HD2DRPG
                 if (item.Damage > 0)
                 {
                     StartCoroutine(BattleFX.Impact(item.Element == Element.Fire ? "fire" : "thunder", item.Element, t.Center, t.Actor.transform.position));
-                    int dmg = Mathf.RoundToInt(item.Damage * Random.Range(0.95f, 1.05f));
+                    float raw = item.Damage * Random.Range(0.95f, 1.05f);
+                    if (t.IsWeakTo(item.Element)) raw *= 1.3f;
+                    if (t.Broken) raw *= 2f;
+                    int dmg = Mathf.RoundToInt(raw);
                     yield return Wait(0.1f);
                     StartCoroutine(ApplyDamage(t, dmg, item.Element, t.IsWeakTo(item.Element), false, 0));
                     continue;
@@ -783,6 +786,7 @@ namespace HD2DRPG
             if (t.Alive) { Heal(t, hp, 0); return; }
             t.HP = hp;
             SetKO(t, false);
+            if (!nextOrder.Contains(t)) nextOrder.Add(t); // act again next round
             hud.Popup(t.Center, "Revived", UIKit.Gold, 38);
             FX.Burst(t.Center, new Color(1f, 0.85f, 0.5f), 40, 2f, 0.2f, 1.2f, -0.5f, 0.5f, true);
             hud.RefreshParty(null, 0);

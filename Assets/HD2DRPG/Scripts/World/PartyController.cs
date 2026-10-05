@@ -52,10 +52,13 @@ namespace HD2DRPG
         public void Teleport(Vector3 pos, Vector3 facingDir)
         {
             trail.Clear();
-            for (int i = 0; i < 64; i++) trail.Add(pos - facingDir * i * 0.1f);
+            trail.Add(pos);
             for (int i = 0; i < Actors.Count; i++)
             {
-                Actors[i].transform.position = pos - facingDir * FollowSpacing * i;
+                // try to line up behind the leader, but never inside a wall
+                Vector3 p = pos - facingDir * FollowSpacing * i;
+                if (Map != null && !Map.CanStand(p, Radius)) p = pos;
+                Actors[i].transform.position = p;
                 Actors[i].Play("idle");
             }
             LastMoveDir = facingDir;
@@ -253,6 +256,14 @@ namespace HD2DRPG
                 Actor.gameObject.SetActive(true);
                 if (aura) aura.Play();
             }
+        }
+
+        /// <summary>After the party flees: retreat to the spawn point and pause briefly.</summary>
+        public void Retreat()
+        {
+            transform.position = home;
+            wanderTarget = home;
+            Cooldown = 3f;
         }
 
         public void Defeat()

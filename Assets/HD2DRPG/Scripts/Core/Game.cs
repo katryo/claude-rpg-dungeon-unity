@@ -325,7 +325,7 @@ namespace HD2DRPG
             }
             else
             {
-                symbol.Cooldown = 3f;
+                symbol.Retreat();
             }
             rig.Follow(Party.Leader.transform, true);
             AudioManager.Music("bgm_castle", 1f);
@@ -454,7 +454,7 @@ namespace HD2DRPG
                 Aren("Come on. Let's go home — and tell everyone the sun is back."),
             });
             yield return UI.Fader.To(1f, 2f);
-            UI.Fader.Alpha = 0.92f;
+            UI.Fader.Alpha = 0f;
             yield return UI.Credits();
             yield return UI.Fader.To(1f, 1f);
             yield return TitleLoop();
