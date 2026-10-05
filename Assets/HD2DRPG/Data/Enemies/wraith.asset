@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58de0b707c5ee9142883d91a6aecf0c0, type: 3}
+  m_Name: wraith
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.EnemyAsset
+  Def:
+    Id: wraith
+    Name: Shadow Wraith
+    SpriteId: wraith
+    AttackSpriteId: 
+    Stats:
+      MaxHP: 270
+      MaxMP: 99
+      Atk: 40
+      Def: 26
+      Mag: 58
+      Res: 42
+      Spd: 34
+      Luck: 12
+    Shield: 2
+    Weaknesses: 020000000300000006000000
+    Exp: 130
+    Gold: 50
+    Skills:
+    - Name: Grave Touch
+      Kind: 0
+      Target: 3
+      Element: 7
+      Power: 0.9
+      Hits: 1
+      Weight: 1.5
+      Buff: 0
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    - Name: Dark Bolt
+      Kind: 1
+      Target: 3
+      Element: 7
+      Power: 1.25
+      Hits: 1
+      Weight: 2
+      Buff: 0
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    - Name: Wail of the Lost
+      Kind: 1
+      Target: 4
+      Element: 7
+      Power: 0.7
+      Hits: 1
+      Weight: 1
+      Buff: 0
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    Floating: 1
+    Scale: 1
+    IsBoss: 0
+    Drop: ether
+    Tint: {r: 1, g: 1, b: 1, a: 1}
+    Actions: 1

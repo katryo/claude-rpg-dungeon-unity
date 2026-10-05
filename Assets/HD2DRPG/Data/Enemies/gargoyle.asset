@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58de0b707c5ee9142883d91a6aecf0c0, type: 3}
+  m_Name: gargoyle
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.EnemyAsset
+  Def:
+    Id: gargoyle
+    Name: Gargoyle
+    SpriteId: gargoyle
+    AttackSpriteId: 
+    Stats:
+      MaxHP: 460
+      MaxMP: 0
+      Atk: 70
+      Def: 52
+      Mag: 30
+      Res: 26
+      Spd: 18
+      Luck: 10
+    Shield: 4
+    Weaknesses: 010000000400000005000000
+    Exp: 200
+    Gold: 90
+    Skills:
+    - Name: Stone Claw
+      Kind: 0
+      Target: 3
+      Element: 8
+      Power: 0.65
+      Hits: 2
+      Weight: 2
+      Buff: 0
+      Fx: slash
+      MinPhase: 0
+      Line: 
+    - Name: Granite Dive
+      Kind: 0
+      Target: 3
+      Element: 8
+      Power: 1.4
+      Hits: 1
+      Weight: 1
+      Buff: 0
+      Fx: heavy
+      MinPhase: 0
+      Line: 
+    - Name: Petrifying Gaze
+      Kind: 5
+      Target: 3
+      Element: 8
+      Power: 0
+      Hits: 1
+      Weight: 0.8
+      Buff: 6
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    Floating: 1
+    Scale: 1
+    IsBoss: 0
+    Drop: hi_potion
+    Tint: {r: 1, g: 1, b: 1, a: 1}
+    Actions: 1

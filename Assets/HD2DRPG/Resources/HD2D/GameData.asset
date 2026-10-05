@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4822128d2bac84847a3cfa09f7256f03, type: 3}
+  m_Name: GameData
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.GameDataAsset
+  StartLevel: 10
+  StartGold: 480
+  StartItems:
+  - Id: potion
+    Count: 6
+  - Id: ether
+    Count: 3
+  - Id: phoenix_feather
+    Count: 2
+  - Id: greek_fire
+    Count: 1
+  StartEquipment:
+  - Id: hermes_sandals
+    Count: 1
+  Characters:
+  - {fileID: 11400000, guid: 8a2c98a9831ec974392c1a335fe71ecb, type: 2}
+  - {fileID: 11400000, guid: 53166a16e08e5914386f6f2db9662580, type: 2}
+  - {fileID: 11400000, guid: 351f7543bd5ede54cbb004e666e0a17e, type: 2}
+  Skills:
+  - {fileID: 11400000, guid: cea369703a8ba894bac54a287ccfe066, type: 2}
+  - {fileID: 11400000, guid: 239045fa7f7abd14590396e5b4e4e004, type: 2}
+  - {fileID: 11400000, guid: 57c0e30e8f37d874fbaa1fae2d7a85be, type: 2}
+  - {fileID: 11400000, guid: 756c8f1a08fe60d4199c38b6faa3c206, type: 2}
+  - {fileID: 11400000, guid: d2fc57f177eac7543a9d50a9f59fab16, type: 2}
+  - {fileID: 11400000, guid: f44328abe0a82434195482332cd6e9c9, type: 2}
+  - {fileID: 11400000, guid: 8f9941234ad4a564fa8f1c7794b84432, type: 2}
+  - {fileID: 11400000, guid: 87811db326f9af547aec4dab1ae0ccc7, type: 2}
+  - {fileID: 11400000, guid: b5abf650bed59134b93a889700ce3daa, type: 2}
+  - {fileID: 11400000, guid: c5101b5f81c0db44fbde800c56d4b258, type: 2}
+  - {fileID: 11400000, guid: 321799fdf1ad85a4292c41bb17d4e793, type: 2}
+  - {fileID: 11400000, guid: 7b07aaff052df404a8da813160f4960f, type: 2}
+  - {fileID: 11400000, guid: cb7b772e8b31cf94fbcf1bf10f982770, type: 2}
+  - {fileID: 11400000, guid: 86f2df43e7fa99344a49659eabb4f964, type: 2}
+  - {fileID: 11400000, guid: 69ce5707bc86c7e41bfbb93a2cc2abe0, type: 2}
+  - {fileID: 11400000, guid: 44b9a86cb831a354ca97201d550f2495, type: 2}
+  - {fileID: 11400000, guid: 3b296172c4783bf4ba93a72195ecf880, type: 2}
+  - {fileID: 11400000, guid: 3f924065f80f67a4d8e04172b1ccef34, type: 2}
+  - {fileID: 11400000, guid: b96dcd00d5534d849a1d82a19188ec97, type: 2}
+  - {fileID: 11400000, guid: ba5f44601af388c409d5e657292bfda8, type: 2}
+  - {fileID: 11400000, guid: a742c7ded00507e4988c3311fe4d8910, type: 2}
+  Equipment:
+  - {fileID: 11400000, guid: 1b030547c2ce14a45ad5da8adb3be82a, type: 2}
+  - {fileID: 11400000, guid: 5f7a8caef5d7cf145885a5a9484fcee0, type: 2}
+  - {fileID: 11400000, guid: 16c63f5f3d919a448a65ae1dd0aaf72c, type: 2}
+  - {fileID: 11400000, guid: c72b01810e50c8a4892ee71fcf324903, type: 2}
+  - {fileID: 11400000, guid: 92336a89abc3a304aa36d465d27a3878, type: 2}
+  - {fileID: 11400000, guid: 07fe5f109ed49e1408a571b68e07d23b, type: 2}
+  - {fileID: 11400000, guid: e40418d4416e7274781c4f594aa06434, type: 2}
+  - {fileID: 11400000, guid: 756090d4d202cac42a9a14b7ab33c07c, type: 2}
+  - {fileID: 11400000, guid: 082001fae0590164abf17c6ad0284396, type: 2}
+  - {fileID: 11400000, guid: 9c1dc21cfcaa98148b6ccf12ee7385ce, type: 2}
+  - {fileID: 11400000, guid: 82466590b52bf084a97a1bc8a42168f2, type: 2}
+  - {fileID: 11400000, guid: 35ff060e33c08db409ce50ce746f7f6a, type: 2}
+  - {fileID: 11400000, guid: c3e852b8b6caf744b905cc85393f1587, type: 2}
+  - {fileID: 11400000, guid: b5650ea551b842547b2ff35230fc84ef, type: 2}
+  - {fileID: 11400000, guid: c4c465cbd99815f4f994f32666eb3c45, type: 2}
+  - {fileID: 11400000, guid: 621d2e008f543c7489753588b33b9c5f, type: 2}
+  - {fileID: 11400000, guid: 7b5b8c4960c76954ba1a7e3617547799, type: 2}
+  - {fileID: 11400000, guid: 9f0bf1c1146b7fa4b9bd0e7382cc813d, type: 2}
+  - {fileID: 11400000, guid: 50c06f74cbb4478499c431227c298bbd, type: 2}
+  Items:
+  - {fileID: 11400000, guid: 36e03bb5b3a2c22459878c94adf2c4f8, type: 2}
+  - {fileID: 11400000, guid: fd2ebdeb38307504494d01e5142b600a, type: 2}
+  - {fileID: 11400000, guid: d4561d92fb27c5a4186c73a113b4de32, type: 2}
+  - {fileID: 11400000, guid: 69cd773c4bab0884eb455ecd7e0b235c, type: 2}
+  - {fileID: 11400000, guid: 6cfd417e3b7cf39489370f5669eaad27, type: 2}
+  - {fileID: 11400000, guid: 3abe967907c9942479082c6b6e24b345, type: 2}
+  - {fileID: 11400000, guid: 02a386a94b2f6014f990dacac95ee664, type: 2}
+  - {fileID: 11400000, guid: 702c24107d3a0d047a5f6ad6a6486732, type: 2}
+  Enemies:
+  - {fileID: 11400000, guid: 8f2bf17327914aa49863b4fbe4360bef, type: 2}
+  - {fileID: 11400000, guid: 8fd5ccffccbd42041b6da8a7b554efd7, type: 2}
+  - {fileID: 11400000, guid: 914914d2cc563ce46860bd6fc2bd8152, type: 2}
+  - {fileID: 11400000, guid: 09e0f5b79bfd46540b5c76e250ba0e3a, type: 2}
+  - {fileID: 11400000, guid: 95fe332ff3390b84cb3f697d582bc0a7, type: 2}
+  Encounters:
+  - Id: hall_a
+    Enemies:
+    - skeleton
+    - skeleton
+  - Id: hall_b
+    Enemies:
+    - wraith
+    - skeleton
+    - wraith
+  - Id: gallery_a
+    Enemies:
+    - gargoyle
+    - gargoyle
+  - Id: gallery_b
+    Enemies:
+    - wraith
+    - gargoyle
+    - wraith
+  - Id: guard
+    Enemies:
+    - wraith
+    - doom_knight
+    - wraith
+  - Id: boss
+    Enemies:
+    - dark_lord

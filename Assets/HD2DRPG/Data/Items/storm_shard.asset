@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e0949599e640484097e0fdf5e920fbd, type: 3}
+  m_Name: storm_shard
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.ItemAsset
+  Def:
+    Id: storm_shard
+    Name: Storm Shard
+    Description: A crystal of bottled lightning. Deals Thunder damage to one foe.
+    Target: 3
+    HealHP: 0
+    HealMP: 0
+    HealPercent: 0
+    Revive: 0
+    Price: 0
+    Damage: 380
+    Element: 5

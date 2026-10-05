@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 465922c14bb951f4b898bcf4a13415c1, type: 3}
+  m_Name: aren
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.CharacterAsset
+  Def:
+    Id: aren
+    Name: Aren
+    Title: Spellblade
+    SpritePrefix: aren
+    BaseStats:
+      MaxHP: 180
+      MaxMP: 30
+      Atk: 24
+      Def: 18
+      Mag: 22
+      Res: 16
+      Spd: 22
+      Luck: 14
+    Growth:
+      MaxHP: 140
+      MaxMP: 40
+      Atk: 25
+      Def: 18
+      Mag: 22
+      Res: 16
+      Spd: 15
+      Luck: 10
+    WeaponType: 0
+    SkillTable:
+    - level: 1
+      skillId: flame_edge
+    - level: 1
+      skillId: frost_edge
+    - level: 5
+      skillId: twin_rune
+    - level: 8
+      skillId: thunder_rend
+    - level: 10
+      skillId: valor
+    - level: 12
+      skillId: aether_blade
+    StartEquip:
+    - runeblade
+    - spellweave_mail
+    - leather_band
+    - 
+    ThemeColor: {r: 0.35, g: 0.55, b: 1, a: 1}
+    Bio: Last knight of the Order of the Runic Flame. Wields sword and spell alike
+      to end the Long Night.

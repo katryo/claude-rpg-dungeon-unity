@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58de0b707c5ee9142883d91a6aecf0c0, type: 3}
+  m_Name: dark_lord
+  m_EditorClassIdentifier: Assembly-CSharp::HD2DRPG.EnemyAsset
+  Def:
+    Id: dark_lord
+    Name: Malzarath, the Dark Lord
+    SpriteId: darklord
+    AttackSpriteId: 
+    Stats:
+      MaxHP: 5400
+      MaxMP: 999
+      Atk: 96
+      Def: 56
+      Mag: 92
+      Res: 52
+      Spd: 34
+      Luck: 20
+    Shield: 7
+    Weaknesses: 000000000500000006000000
+    Exp: 0
+    Gold: 0
+    Skills:
+    - Name: Dread Blade
+      Kind: 0
+      Target: 3
+      Element: 7
+      Power: 1.15
+      Hits: 1
+      Weight: 3
+      Buff: 0
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    - Name: Abyssal Nova
+      Kind: 1
+      Target: 4
+      Element: 7
+      Power: 1
+      Hits: 1
+      Weight: 2
+      Buff: 0
+      Fx: nova
+      MinPhase: 0
+      Line: Drown in the endless night!
+    - Name: Shadow Chains
+      Kind: 5
+      Target: 3
+      Element: 7
+      Power: 0.6
+      Hits: 1
+      Weight: 1.2
+      Buff: 5
+      Fx: dark
+      MinPhase: 0
+      Line: 
+    - Name: Void Meteor
+      Kind: 1
+      Target: 4
+      Element: 7
+      Power: 1.35
+      Hits: 1
+      Weight: 1.6
+      Buff: 0
+      Fx: meteor
+      MinPhase: 1
+      Line: Behold the sky itself fall!
+    - Name: Soul Reaver
+      Kind: 0
+      Target: 3
+      Element: 7
+      Power: 0.75
+      Hits: 3
+      Weight: 1.5
+      Buff: 0
+      Fx: dark
+      MinPhase: 1
+      Line: 
+    Floating: 0
+    Scale: 1.6
+    IsBoss: 1
+    Drop: 
+    Tint: {r: 1, g: 1, b: 1, a: 1}
+    Actions: 1
