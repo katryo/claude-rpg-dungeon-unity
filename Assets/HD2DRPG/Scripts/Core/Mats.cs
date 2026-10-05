@@ -13,6 +13,8 @@ namespace HD2DRPG
     {
         static readonly Dictionary<string, Material> cache = new Dictionary<string, Material>();
 
+        public static void ClearCache() => cache.Clear();
+
         public static bool IsURP => GraphicsSettings.defaultRenderPipeline != null || QualitySettings.renderPipeline != null;
 
         static Shader Find(params string[] names)

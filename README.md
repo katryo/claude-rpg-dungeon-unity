@@ -37,8 +37,8 @@ If the automatic bake was skipped (e.g. another scene had unsaved changes), run
 
 | What | Where |
 |---|---|
-| Castle layout: walls, pillars, torches, windows, banners, throne, braziers | `Castle` object in `Main.unity` — move, duplicate or delete anything. Collision comes from the colliders, so walkable space follows your edits. |
-| Treasure | `Chest` components: edit `Contents` (`item:<id>`, `equip:<id>`, `gold:<n>`) |
+| Castle layout: walls, pillars, torches, windows, banners, throne, braziers | `Castle` object in `Main.unity`. Pillars, props, chests and enemies are individual objects; walls are grouped into one object per row (`WallRow_n`, with their torches/windows as children). Collision comes from the colliders, so walkable space follows your edits. |
+| Treasure | `Chest` components: edit `Contents` (`item:<id>`, `equip:<id>`, `gold:<n>`). Duplicates get their own save id automatically. |
 | Enemy placement | `Symbol_*` objects: `EncounterId`, wander radius, chase range. The boss symbol has `IsBoss`. |
 | Party start position | `Castle/PartyStart` |
 | After adding/removing chests or enemies | Right-click the `CastleRoot` component ▸ **Refresh Lists** (also done automatically at play time) |

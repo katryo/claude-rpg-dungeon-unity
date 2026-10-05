@@ -16,7 +16,28 @@ namespace HD2DRPG
         [SerializeField] ParticleSystem glint;
         Material mat;
 
-        public string FlagKey => "chest_" + Tile.x + "_" + Tile.y;
+        [Tooltip("Save-flag id; regenerated automatically for duplicated chests.")]
+        [SerializeField] string uniqueId;
+
+        public string FlagKey => "chest_" + (string.IsNullOrEmpty(uniqueId) ? Tile.x + "_" + Tile.y : uniqueId);
+
+#if UNITY_EDITOR
+        // Duplicating an object in the editor copies its id; give copies a fresh one.
+        void OnValidate()
+        {
+            if (Application.isPlaying) return;
+            bool clash = string.IsNullOrEmpty(uniqueId);
+            if (!clash)
+                foreach (var o in FindObjectsByType<Chest>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                    if (o != this && o.uniqueId == uniqueId) { clash = true; break; }
+            if (clash)
+            {
+                uniqueId = System.Guid.NewGuid().ToString("N").Substring(0, 12);
+                UnityEditor.EditorUtility.SetDirty(this);
+            }
+        }
+#endif
+
         public Vector3 GroundPos => new Vector3(transform.position.x, 0, transform.position.z);
 
         Material Mat
@@ -35,6 +56,7 @@ namespace HD2DRPG
             go.transform.position = pos;
             var c = go.AddComponent<Chest>();
             c.Tile = tile;
+            c.uniqueId = tile.x + "_" + tile.y;
             c.Contents = contents;
             var col = go.AddComponent<BoxCollider>();
             col.center = new Vector3(0, 0.5f, 0);

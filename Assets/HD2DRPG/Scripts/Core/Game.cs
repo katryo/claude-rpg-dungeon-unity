@@ -176,7 +176,7 @@ namespace HD2DRPG
         {
             foreach (var c in World.Chests)
                 if (State.Flags.Contains(c.FlagKey)) c.SetOpened(); else c.SetClosed();
-            foreach (var s in World.Symbols) s.Restore(State.Flags.Contains("enc_" + s.EncounterId));
+            foreach (var s in World.Symbols) s.Restore(State.Flags.Contains(s.FlagKey));
             if (World.Boss != null) World.Boss.Restore(State.Flags.Contains("boss"));
         }
 
@@ -342,7 +342,7 @@ namespace HD2DRPG
                     yield return EndingRoutine(symbol);
                     yield break;
                 }
-                State.Flags.Add("enc_" + symbol.EncounterId);
+                State.Flags.Add(symbol.FlagKey);
                 symbol.Defeat();
             }
             else

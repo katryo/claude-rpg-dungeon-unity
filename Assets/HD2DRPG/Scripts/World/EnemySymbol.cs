@@ -9,6 +9,29 @@ namespace HD2DRPG
     {
         [Tooltip("Encounter id from the game data (Encounters list).")]
         public string EncounterId;
+        [Tooltip("Save-flag id; regenerated automatically for duplicated symbols.")]
+        [SerializeField] string uniqueId;
+
+        /// <summary>Flag recording that this particular symbol was defeated.</summary>
+        public string FlagKey => "enc_" + (string.IsNullOrEmpty(uniqueId) ? EncounterId : uniqueId);
+
+#if UNITY_EDITOR
+        // Duplicating an object in the editor copies its id; give copies a fresh one.
+        void OnValidate()
+        {
+            if (Application.isPlaying) return;
+            bool clash = string.IsNullOrEmpty(uniqueId);
+            if (!clash)
+                foreach (var o in FindObjectsByType<EnemySymbol>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                    if (o != this && o.uniqueId == uniqueId) { clash = true; break; }
+            if (clash)
+            {
+                uniqueId = System.Guid.NewGuid().ToString("N").Substring(0, 12);
+                UnityEditor.EditorUtility.SetDirty(this);
+            }
+        }
+#endif
+
         public bool Wanders = true;
         public bool IsBoss;
         public SpriteActor Actor;
@@ -41,6 +64,7 @@ namespace HD2DRPG
             go.transform.position = pos;
             var s = go.AddComponent<EnemySymbol>();
             s.EncounterId = encounterId;
+            s.uniqueId = encounterId;
             s.Wanders = wanders;
             s.Actor = SpriteActor.Create("Sprite", sprite, go.transform, scale);
             s.Actor.transform.localPosition = Vector3.zero;

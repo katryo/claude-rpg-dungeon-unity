@@ -70,7 +70,11 @@ namespace HD2DRPG
                 party.Add(b);
             }
 
-            var ids = Database.Encounters[encounterId];
+            if (!Database.Encounters.TryGetValue(encounterId ?? "", out var ids))
+            {
+                Debug.LogWarning("[HD-2D RPG] Unknown encounter id '" + encounterId + "'; using a default battle.");
+                ids = Database.Encounters.Values.First();
+            }
             var slots = BattleStage.EnemySlots(ids.Length, boss);
             var counts = ids.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
             var seen = new Dictionary<string, int>();

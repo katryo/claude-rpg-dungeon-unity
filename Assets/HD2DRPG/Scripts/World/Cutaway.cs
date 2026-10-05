@@ -6,10 +6,13 @@ namespace HD2DRPG
     /// Diorama cutaway: walls and pillars that stand between the camera and the party sink down
     /// so the player is never hidden (rows south of the leader are lowered).
     /// </summary>
+    [SelectionBase]
     public class Cutaway : MonoBehaviour
     {
         public static Transform Focus;
+        [Tooltip("Local Z of the cut line (moves with this object).")]
         public float Z;
+        [Tooltip("Local X of the object (moves with this object).")]
         public float X;
         public float XRange = -1f;   // < 0 = whole row
         public float Margin = 0.6f;
@@ -23,7 +26,8 @@ namespace HD2DRPG
         {
             if (Focus == null) return;
             Vector3 p = Focus.position;
-            bool lower = Z < p.z - Margin && (XRange < 0 || Mathf.Abs(X - p.x) < XRange);
+            Vector3 me = transform.TransformPoint(new Vector3(X, 0, Z));
+            bool lower = me.z < p.z - Margin && (XRange < 0 || Mathf.Abs(me.x - p.x) < XRange);
             float target = lower ? LowScale : 1f;
             current = Mathf.MoveTowards(current, target, Time.deltaTime * 3.5f);
             bool fullyLow = Low != null && current <= LowScale + 0.001f;

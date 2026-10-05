@@ -247,14 +247,16 @@ namespace HD2DRPG
                         case 'P':
                         {
                             // The holder scales the whole pillar down when it hides the party (flutes hide the squash).
-                            var holder = new GameObject("PillarCut");
+                            var holder = new GameObject("Pillar");
                             holder.transform.SetParent(props, false);
+                            holder.transform.position = p;
                             var pillar = EnvKit.Pillar(holder.transform, p, 4.4f);
+                            pillar.name = "Column";
                             var cut = holder.AddComponent<Cutaway>();
-                            cut.Z = p.z; cut.X = p.x; cut.XRange = 1.8f; cut.Margin = 0.2f; cut.LowScale = 0.16f;
+                            cut.Z = 0; cut.X = 0; cut.XRange = 1.8f; cut.Margin = 0.2f; cut.LowScale = 0.16f;
                             cut.Tall = pillar;
                             var cap = holder.AddComponent<CapsuleCollider>();
-                            cap.center = p + Vector3.up * 1.5f;
+                            cap.center = Vector3.up * 1.5f;
                             cap.radius = 0.42f;
                             cap.height = 3f;
                             break;
@@ -293,7 +295,7 @@ namespace HD2DRPG
                     {
                         var sym = EnemySymbol.Create(props, p, enc.Id, enc.Sprite, enc.Wanders, enc.Scale, enc.Tint);
                         res.Symbols.Add(sym);
-                        if (state.Flags.Contains("enc_" + enc.Id)) sym.Restore(true);
+                        if (state.Flags.Contains(sym.FlagKey)) sym.Restore(true);
                     }
                 }
         }

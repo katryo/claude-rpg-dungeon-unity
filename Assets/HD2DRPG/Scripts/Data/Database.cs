@@ -83,6 +83,41 @@ namespace HD2DRPG
             foreach (var c in data.Characters) if (c != null && c.Def != null) PartyOrder.Add(c.Def.Id);
             StartItems.AddRange(data.StartItems);
             StartEquipment.AddRange(data.StartEquipment);
+            Validate();
+        }
+
+        /// <summary>Drops entries with missing ids or dangling references so bad data can't crash the game.</summary>
+        static void Validate()
+        {
+            void DropEmpty<T>(Dictionary<string, T> d, string what)
+            {
+                if (d.Remove("")) Debug.LogWarning("[HD-2D RPG] A " + what + " asset has no Id and was ignored.");
+            }
+            DropEmpty(Skills, "skill"); DropEmpty(Equips, "equipment"); DropEmpty(Items, "item");
+            DropEmpty(Enemies, "enemy"); DropEmpty(Characters, "character");
+            PartyOrder.RemoveAll(id => !Characters.ContainsKey(id));
+            foreach (var c in Characters.Values)
+            {
+                c.SkillTable.RemoveAll(t =>
+                {
+                    bool bad = string.IsNullOrEmpty(t.skillId) || !Skills.ContainsKey(t.skillId);
+                    if (bad) Debug.LogWarning("[HD-2D RPG] " + c.Id + ": unknown skill '" + t.skillId + "' removed.");
+                    return bad;
+                });
+                if (string.IsNullOrEmpty(c.SpritePrefix)) c.SpritePrefix = c.Id;
+                for (int i = 0; i < c.StartEquip.Length; i++)
+                    if (c.StartEquip[i] != null && !Equips.ContainsKey(c.StartEquip[i])) c.StartEquip[i] = null;
+            }
+            foreach (var e in Enemies.Values)
+                if (e.Skills.Count == 0)
+                    e.Skills.Add(new EnemySkill { Name = "Attack" });
+            foreach (var key in new List<string>(Encounters.Keys))
+            {
+                var valid = System.Array.FindAll(Encounters[key] ?? new string[0], id => !string.IsNullOrEmpty(id) && Enemies.ContainsKey(id));
+                if (valid.Length == 0) { Encounters.Remove(key); Debug.LogWarning("[HD-2D RPG] Encounter '" + key + "' has no valid enemies and was ignored."); }
+                else Encounters[key] = valid;
+            }
+            Encounters.Remove("");
         }
 
         // Unity serializes null strings as "", which the game treats as "nothing".

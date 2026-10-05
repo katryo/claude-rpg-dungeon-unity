@@ -110,6 +110,7 @@ namespace HD2DRPG
         }
 
         static Material blobMat;
+        public static void ClearCache() => blobMat = null;
         static Material BlobShadowMaterial()
         {
             if (blobMat != null) return blobMat;

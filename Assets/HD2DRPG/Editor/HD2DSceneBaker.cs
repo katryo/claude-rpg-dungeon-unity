@@ -179,7 +179,7 @@ namespace HD2DRPG.EditorTools
                     Selection.activeGameObject = castle.Root.gameObject;
                     EditorUtility.DisplayDialog("HD-2D RPG",
                         "The castle is now in the scene.\n\n" +
-                        "• Move, duplicate or delete walls, pillars, torches, chests and enemy symbols freely (collision follows the colliders).\n" +
+                        "• Move, duplicate or delete pillars, props, chests and enemy symbols freely; walls are grouped per row (WallRow_n). Collision follows the colliders.\n" +
                         "• Edit chest contents and encounter ids in the Inspector; use 'Refresh Lists' on the Castle object after adding/removing chests or enemies.\n" +
                         "• Move 'PartyStart' to change where the game begins.\n" +
                         "• Lighting & fog: Window ▸ Rendering ▸ Lighting. Post-processing: Resources/HD2D/HD2D_PostFX.", "OK");
